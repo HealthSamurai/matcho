@@ -272,7 +272,6 @@
      {:a :b}))
 
   (testing "non-inheritance of strict mode"
-
     (m/assert
      ^:matcho/strict
      {:a [1 2]}
@@ -286,4 +285,11 @@
     (m/assert
      ^:matcho/strict
      {:a ^:matcho/strict [1 2]}
-     {:a [1 2]})))
+     {:a [1 2]}))
+
+  (testing "compare vector as map"
+    (m/assert
+    [{:id "1" :a 1 } {:id "2" :a 2}] 
+    ^{:matcho/as-map-by :id}
+    [{:id "2" :a 2} {:id "1" :a 1}])) 
+  )
