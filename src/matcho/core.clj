@@ -27,44 +27,51 @@
     :else (when-not (= p x)
             {:expected p :but x})))
 
+(defn- normolize [coll n-fn]
+  (->> coll (map (juxt n-fn identity)) (into {})))
+
 (defn- match-recur [errors path x pattern]
-  (cond
-    (and (map? x)
-         (map? pattern))
-    (let [strict? (:matcho/strict (meta pattern))
-          errors  (if (and strict? (not (= (set (keys pattern))
-                                           (set (keys x)))))
-                    (conj errors {:expected "Same keys in pattern and x"
-                                  :but      (str "Got " (vec (keys pattern))
-                                                 " in pattern and " (vec (keys x)) " in x")
-                                  :path     path})
-                    errors)]
-      (reduce (fn [errors [k v]]
-                (let [path (conj path k)
-                      ev   (get x k)]
-                  (match-recur errors path ev v)))
-              errors pattern))
+  (let [n-fn (or (:matcho/as-map-by (meta x))
+                   (:matcho/as-map-by (meta pattern)))
+        as-map? (and (sequential? x) (sequential? pattern) n-fn)]
+    (cond
+      (or (and (map? x) (map? pattern)) as-map?)
+      (let [pattern (cond-> pattern as-map? (normolize n-fn))
+            x (cond-> x as-map? (normolize n-fn))
+            strict? (:matcho/strict (meta pattern))
+            errors  (if (and strict? (not (= (set (keys pattern))
+                                             (set (keys x)))))
+                      (conj errors {:expected "Same keys in pattern and x"
+                                    :but      (str "Got " (vec (keys pattern))
+                                                   " in pattern and " (vec (keys x)) " in x")
+                                    :path     path})
+                      errors)]
+        (reduce (fn [errors [k v]]
+                  (let [path (conj path k)
+                        ev   (get x k)]
+                    (match-recur errors path ev v)))
+                errors pattern))
 
-    (and (sequential? pattern)
-         (sequential? x))
-    (let [strict? (:matcho/strict (meta pattern))
-          errors  (if (and strict? (not (= (count pattern) (count x))))
-                    (conj errors {:expected "Same number of elements in sequences"
-                                  :but      (str "Got " (count pattern)
-                                                 " in pattern and " (count x) " in x")
-                                  :path     path})
-                    errors)]
-      (reduce (fn [errors [k v]]
-                (let [path (conj path k)
-                      ev   (nth (vec x) k nil)]
-                  (match-recur errors path ev v)))
-              errors
-              (map (fn [x i] [i x]) pattern (range))))
+      (and (sequential? pattern)
+           (sequential? x))
+      (let [strict? (:matcho/strict (meta pattern))
+            errors  (if (and strict? (not (= (count pattern) (count x))))
+                      (conj errors {:expected "Same number of elements in sequences"
+                                    :but      (str "Got " (count pattern)
+                                                   " in pattern and " (count x) " in x")
+                                    :path     path})
+                      errors)]
+        (reduce (fn [errors [k v]]
+                  (let [path (conj path k)
+                        ev   (nth (vec x) k nil)]
+                    (match-recur errors path ev v)))
+                errors
+                (map (fn [x i] [i x]) pattern (range))))
 
-    :else (let [err (smart-explain-data pattern x)]
-            (if err
-              (conj errors (assoc err :path path))
-              errors))))
+      :else (let [err (smart-explain-data pattern x)]
+              (if err
+                (conj errors (assoc err :path path))
+                errors)))))
 
 (defn- match-recur-strict [errors path x pattern]
   (cond
