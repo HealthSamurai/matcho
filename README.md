@@ -87,7 +87,7 @@ There are few main vars in core ns: `valid?`, `explain-data`, `assert` and
 if value conforms the pattern and false in other case. The second one is a
 function, which returns a vector of errors or nil. The third one is a macro, it
 works the same way as `valid?`, but additionally asserts with `is` and provide a
-vector of errors using `expalin-data`. `dessert` is opposit to `assert`, test
+vector of errors using `explain-data`. `dessert` is opposit to `assert`, test
 fails only if value is `valid?`.
 
 ```clj
