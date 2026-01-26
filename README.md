@@ -1,4 +1,4 @@
-# matcho [![CircleCI](https://circleci.com/gh/HealthSamurai/matcho.svg?style=shield)](https://circleci.com/gh/HealthSamurai/matcho) [![Join gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/healthsamurai/matcho)
+# matcho [![Clojars Project](https://img.shields.io/clojars/v/com.health-samurai/matcho.svg)](http://clojars.org/com.health-samurai/matcho) [![CircleCI](https://circleci.com/gh/HealthSamurai/matcho.svg?style=shield)](https://circleci.com/gh/HealthSamurai/matcho) [![Join gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/healthsamurai/matcho)
 
 Simpliest pattern matching you've ever seen.
 
