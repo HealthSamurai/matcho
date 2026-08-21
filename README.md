@@ -58,7 +58,7 @@ More declarative and readable approach:
   (m/assert pattern resp))
 ```
 
-Full example can be found [here](./test/matcho/core_test.clj).
+Full example can be found [here](./test/matcho/core_test.cljc).
 
 ## Usage
 
@@ -201,7 +201,7 @@ There are several options for pattern leaf values. It can be:
             (m/explain-data ::pos-coll [1 -1 2])))
 ```
 
-More advanced examples can be found [here](./test/matcho/core_test.clj).
+More advanced examples can be found [here](./test/matcho/core_test.cljc).
 
 ## Why not just use a clojure.spec?
 
@@ -220,6 +220,16 @@ Because `matcho`, that's why.
 (deftest without-spec-test
   (m/assert {:status 200 :body not-empty} response))
 ```
+
+## Tests
+
+```bash
+make test       # JVM
+make test-clr   # ClojureCLR
+make test-all   # both
+```
+
+`make test-clr` needs the [`cljr`](https://github.com/clojure/clojure-clr) CLI, installed as a dotnet tool.
 
 ## License
 

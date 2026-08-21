@@ -1,7 +1,14 @@
-.PHONY: test
+.PHONY: test test-clr test-all
 
+# JVM
 test:
-	clj -A:test:runner
+	clojure -M:test:runner
+
+# ClojureCLR
+test-clr:
+	cljr -X:test
+
+test-all: test test-clr
 
 deploy: test
 	clj -Spom

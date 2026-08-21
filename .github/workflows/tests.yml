@@ -1,0 +1,46 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: DeLaGuardo/setup-clojure@13.5
+        with:
+          cli: 1.12.4.1582
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install ClojureCLR
+        run: |
+          dotnet tool install --global Clojure.Main --version 1.12.2
+          dotnet tool install --global Clojure.Cljr --version 0.1.0-alpha11
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.gitlibs
+          key: deps-${{ hashFiles('deps.edn', 'deps-clr.edn') }}
+          restore-keys: deps-
+
+      - name: JVM
+        run: clojure -M:test:runner
+
+      - name: ClojureCLR
+        run: cljr -X:test

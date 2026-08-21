@@ -11,7 +11,8 @@
     (when-not (s/valid? p x)
       {:expected (str "conforms to spec: " p) :but (s/explain-data p x)})
 
-    (and (string? x) (instance? java.util.regex.Pattern p))
+    (and (string? x) (instance? #?(:clj  java.util.regex.Pattern
+                                   :cljr System.Text.RegularExpressions.Regex) p))
     (when-not (re-find p x)
       {:expected (str "match regexp: " p) :but x})
 

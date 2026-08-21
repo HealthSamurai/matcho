@@ -1,0 +1,3 @@
+;; clj-kondo has no :cljr support and skips :cljr branches. matcho has no
+;; ClojureScript target, so lint .cljc under the :clj feature alone.
+{:cljc {:features #{:clj}}}

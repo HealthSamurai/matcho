@@ -4,3 +4,8 @@ target
 pom.xml
 .lein-failures
 .cpcache
+.DS_Store
+.lsp/
+# clj-kondo writes its cache and the specs it imports here; only config.edn is checked in
+.clj-kondo/*
+!.clj-kondo/config.edn
